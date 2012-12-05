@@ -42,6 +42,10 @@ def add_crowdsourced_values(cls, field_name, settings):
 
 class CrowdsourcedFieldsFormMixin(object):
     class Media:
+        css = {
+            'all': (os.path.join(
+                settings.STATIC_URL, 'crowdsourced_fields/css/combobox.css'), )
+        }
         js = (
             os.path.join(
                 settings.STATIC_URL, 'crowdsourced_fields/js/combobox.js', ),

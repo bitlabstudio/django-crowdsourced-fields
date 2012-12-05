@@ -42,18 +42,20 @@ Don't forget to migrate your database::
 
     ./manage.py migrate crowdsourced_fields
 
-Add jQuery and jQuery UI and tag-it to your base template or at least to the
-template that should display forms with crowdsourced fields::
+Add jQuery and jQuery UI to your base template or at least to the template that 
+should display forms with crowdsourced fields. Also include the jquery UI
+styles and special styles provided by this app::
+
+    <link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1/themes/flick/jquery-ui.css">
+    {{ form.media.css }}
 
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js" type="text/javascript" charset="utf-8"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.12/jquery-ui.min.js" type="text/javascript" charset="utf-8"></script>
-    <script src="{{ STATIC_URL }}crowdsourced_fields/js/combobox.js" type="text/javascript" charset="utf-8"></script>
-    <script src="{{ STATIC_URL }}crowdsourced_fields/js/crowdsourced-combobox.js" type="text/javascript" charset="utf-8"></script>
+    {{ form.media.js }}
 
-Also add a jQuery UI theme and the tag-it theme to your template::
-
-    <link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1/themes/flick/jquery-ui.css">
-    <link href="{{ STATIC_URL }}crowdsourced_fields/css/crowdsourced-fields.css" rel="stylesheet" type="text/css">
+You might want to include the jquery and jquery UI parts in your base template
+and the ``{{ form.media }}`` parts only in the template that uses a form with
+crowdsourced fields.
 
 Usage
 -----
