@@ -2,10 +2,15 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
+from crowdsourced_fields.models import CrowdsourcedFieldsModelMixin
 
-class DummyModel(models.Model):
+
+class DummyModel(CrowdsourcedFieldsModelMixin, models.Model):
     """Dummy model needed for testing purposes."""
-    CROWDSOURCED_FIELDS = ['country', 'title', ]
+    CROWDSOURCED_FIELDS = {
+        'country': {'item_type': 'countries', },
+        'title': {'item_type': 'titles', },
+    }
 
     title = models.CharField(
         max_length=256,

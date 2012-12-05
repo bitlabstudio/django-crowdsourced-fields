@@ -1,7 +1,11 @@
 """Factories for the models of the ``django-crowdsourced-fields`` app."""
 import factory
 
-from crowdsourced_fields.models import CrowdsourcedItem
+from crowdsourced_fields.models import (
+    CrowdsourcedItem,
+    CrowdsourcedItemGenericForeignKey,
+)
+
 
 
 class CrowdsourcedItemFactory(factory.Factory):

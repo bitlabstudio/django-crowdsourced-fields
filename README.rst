@@ -66,33 +66,34 @@ First you need to modify the model that should have crowdsourced fields::
     from crowdsourced_fields.models import CrowdSourcedModelMixin
 
     class YourModel(CrowdsourcedModelMixin, models.Model):
-        CROWDSOURCED_FIELDS = [
-            {'field': 'make', 'item_type': 'make', }
-            {'field': 'model', 'item_type': 'model', }
-        ]
+        CROWDSOURCED_FIELDS = {
+            'make': {'item_type': 'makes', }
+            'model': {'item_type': 'models', }
+        }
 
         make = models.CharField(...)
         model = models.CharField(...)
 
-``CROWDSOURCED_FIELDS`` is a list of dictionaries. The dictionary can contain
-the following keys:
+``CROWDSOURCED_FIELDS`` is a dictionary of dictionaries. The main keys are the
+fields that should be crowdsourced. This must be ``CharFields``.
 
-1. **name (mandatory)**: The name of the field that should become a
-   crowdsourced field. This must be ``CharField``.
+The inner dictionary supports the following keys as settings:
+
 2. **item_type (mandatory)**: The name of the group under which the data of
    this field should be grouped. Let's assume you have two models and both have
    a field ``country`` which should have access to the same data. By giving
    the same ``item_type`` for the field on both models, they will use the same
    set of crowdsourced data.
 
-For each field that you selected, the mixin will dynamically add a new foreign
-key field called ``fieldname_crowdsourced`` to the model. Therefore we will
-save both, the value that the user actually entered and a link to the unique
-and approved value that we maintain through this app.
+For each field that you selected, the mixin will dynamically add a method
+called ``fieldname_crowdsourced`` to the model. Therefore we will save both,
+the value that the user actually entered (in it's original field) and a link to 
+the unique and approved value that we maintain through this app.
 
-When you have prepared your models, run a migration for your app::
-
-    ./manage.py migrate your_app_name
+For your staff users it is save to change the values of the
+``CrowdsourcedItem`` objects. Since you should use those in your templates,
+any typo fixes would be reflected on your site immediately without the need
+of a datamigration.
 
 Create a model form
 +++++++++++++++++++
