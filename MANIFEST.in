@@ -1,0 +1,9 @@
+include AUTHORS
+include LICENSE
+include DESCRIPTION
+include CHANGELOG.txt
+include README.md
+graft crowdsourced_field
+global-exclude *.orig *.pyc *.log
+prune crowdsourced_field/tests/coverage/
+prune crowdsourced_field/.ropeproject

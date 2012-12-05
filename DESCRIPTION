@@ -1,0 +1,4 @@
+A reusable Django app that allows to mark certain fields of your models as
+masterdata. Users would still be able to enter their own values but the app
+will map them to unique instances. Admin staff is able to review all user
+generated entriesand mark them as approved.
