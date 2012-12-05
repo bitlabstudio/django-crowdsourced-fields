@@ -3,6 +3,8 @@ import os
 
 DEBUG = True
 
+SITE_ID = 1
+
 CURRENT_DIR = os.path.dirname(__file__)
 
 DATABASES={
