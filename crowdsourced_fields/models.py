@@ -54,6 +54,34 @@ class CrowdsourcedFieldsModelMixin(object):
         for field_name, field_settings in self.CROWDSOURCED_FIELDS.items():
             add_crowdsourced_method(self, field_name, field_settings)
 
+    def save(self, *args, **kwargs):
+        super(CrowdsourcedFieldsModelMixin, self).save(
+            *args, **kwargs)
+        content_type = ContentType.objects.get_for_model(self)
+        for field_name, field_settings in self.CROWDSOURCED_FIELDS.items():
+            item_type = field_settings['item_type']
+            value = getattr(self, field_name).strip()
+
+            try:
+                item = CrowdsourcedItem.objects.get(
+                    value__iexact=value, item_type=item_type)
+            except CrowdsourcedItem.DoesNotExist:
+                item = CrowdsourcedItem.objects.create(
+                    item_type=item_type, value=value)
+
+            kwargs = {
+                'content_type': content_type,
+                'object_id': self.pk,
+                'item_type': item_type,
+            }
+            try:
+                fk = CrowdsourcedItemGenericForeignKey.objects.get(**kwargs)
+            except CrowdsourcedItemGenericForeignKey.DoesNotExist:
+                fk = CrowdsourcedItemGenericForeignKey(**kwargs)
+
+            fk.item = item
+            fk.save()
+
 
 class CrowdsourcedItemGenericForeignKey(models.Model):
     """
