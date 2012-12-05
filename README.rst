@@ -66,13 +66,24 @@ First you need to modify the model that should have crowdsourced fields::
     from crowdsourced_fields.models import CrowdSourcedModelMixin
 
     class YourModel(CrowdsourcedModelMixin, models.Model):
-        CROWDSOURCED_FIELDS = ['make', 'model', ]
+        CROWDSOURCED_FIELDS = [
+            {'field': 'make', 'item_type': 'make', }
+            {'field': 'model', 'item_type': 'model', }
+        ]
 
         make = models.CharField(...)
         model = models.CharField(...)
 
-``CROWDSOURCED_FIELDS`` is a list of field names that must exist on your model. 
-Currently we only support ``CharFields``.
+``CROWDSOURCED_FIELDS`` is a list of dictionaries. The dictionary can contain
+the following keys:
+
+1. **name (mandatory)**: The name of the field that should become a
+   crowdsourced field. This must be ``CharField``.
+2. **item_type (mandatory)**: The name of the group under which the data of
+   this field should be grouped. Let's assume you have two models and both have
+   a field ``country`` which should have access to the same data. By giving
+   the same ``item_type`` for the field on both models, they will use the same
+   set of crowdsourced data.
 
 For each field that you selected, the mixin will dynamically add a new foreign
 key field called ``fieldname_crowdsourced`` to the model. Therefore we will
