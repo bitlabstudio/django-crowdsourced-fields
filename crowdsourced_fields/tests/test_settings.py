@@ -20,6 +20,7 @@ STATIC_ROOT=os.path.join(CURRENT_DIR, '../../static/')
 
 STATICFILES_DIRS=(
     os.path.join(CURRENT_DIR, 'test_static'),
+    os.path.join(CURRENT_DIR, '../static'),
 )
 
 TEMPLATE_DIRS=(

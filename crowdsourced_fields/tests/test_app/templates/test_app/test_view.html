@@ -1,7 +1,7 @@
 <html>
 <head>
     <link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1/themes/flick/jquery-ui.css">
-    <link href="{{ STATIC_URL }}crowdsourced_fields/css/crowdsourced-fields.css" rel="stylesheet" type="text/css">
+    <link href="{{ STATIC_URL }}crowdsourced_fields/css/combobox.css" rel="stylesheet" type="text/css">
 </head>
 <body>
 <h1>Django Crowdsourced Fields - Test View</h1>
@@ -12,12 +12,19 @@
     <input type="submit" value="Submit" />
 </form>
 
+{% for object in objects %}
+    <p><a href="/{{ object.pk }}/">[{{ object.pk }}] {{ object.title_crowdsourced }}{{ object.name }} {{ object.country_crowdsourced }}</a></p>
+{% endfor %}
+
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js" type="text/javascript" charset="utf-8"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.12/jquery-ui.min.js" type="text/javascript" charset="utf-8"></script>
-<script src="{{ STATIC_URL }}crowdsourced_fields/js/combobox.js" type="text/javascript" charset="utf-8"></script>
+{{ form.media.js }}
 
 <script type="text/javascript">
 $(document).ready(function() {
+    $('#id_country').combobox({
+        source: {{ form.country_crowdsourced_values|safe }}
+    });
 });
 </script>
 </body>

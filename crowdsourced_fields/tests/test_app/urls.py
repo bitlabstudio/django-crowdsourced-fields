@@ -8,9 +8,12 @@ without needing to setup a full blown Django project.
 """
 from django.conf.urls.defaults import patterns, url
 
-from crowdsourced_fields.tests.test_app.views import TestView
+from crowdsourced_fields.tests.test_app.views import TestView, TestDetailView
 
 
-urlpatterns = patterns('',
+urlpatterns = patterns(
+    '',
     url(r'^$', TestView.as_view(), name='crowdsourced_fields_test_view'),
+    url(r'^(?P<id>\d+)/$', TestDetailView.as_view(),
+        name='crowdsourced_fields_test_detail_view'),
 )
