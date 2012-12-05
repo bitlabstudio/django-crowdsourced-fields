@@ -15,3 +15,10 @@ class CrowdsourcedFieldsFormMixinTestCase(TestCase):
             'Should add ``fieldname_crowdsourced_values`` methods to the form'
             " and these methods should return all values for that fields's"
             " item type"))
+
+    def test_initial_value(self):
+        create_fixtures(self)
+        self.dummy.country = 'GERMANY'
+        self.dummy.save()
+        form = DummyModelForm(instance=self.dummy)
+        self.assertEqual(form.initial['country'], self.item.value)

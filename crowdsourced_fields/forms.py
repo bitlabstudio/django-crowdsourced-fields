@@ -56,3 +56,7 @@ class CrowdsourcedFieldsFormMixin(object):
         model = self.Meta.model
         for field_name, settings in model.CROWDSOURCED_FIELDS.items():
             add_crowdsourced_values(self, field_name, settings)
+            instance = kwargs.get('instance')
+            if instance:
+                self.initial[field_name] = getattr(
+                    instance, '{0}_crowdsourced'.format(field_name))()
