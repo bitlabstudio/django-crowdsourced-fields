@@ -83,42 +83,6 @@ class CrowdsourcedFieldsModelMixin(object):
             fk.save()
 
 
-class CrowdsourcedItemGenericForeignKey(models.Model):
-    """
-    Maps ``CrowdsourcedItem`` objects to the objects that use them.
-
-    This is a workaround because we don't want to dynamically add foreign
-    keys to the objects that have crowdsourced fields. We use this mapping
-    relationship instead to remember which object/field belongs to which
-    ``CrowdsourcedItem``.
-
-    :content_type: Part of the generic foreign key to the object this object
-      belongs to.
-    :object_id: See ``content_type``
-    :content_object: See ``content_type``
-    :item: The crowdsourced item which holds the approved data.
-    :item_type: We need this in order to know which ``CrowdsourcedItem`` to
-      get.
-
-    """
-    class Meta:
-        unique_together = ('object_id', 'item_type', )
-
-    content_type = models.ForeignKey(ContentType)
-    object_id = models.PositiveIntegerField()
-    content_object = generic.GenericForeignKey('content_type', 'object_id')
-
-    item = models.ForeignKey(
-        'crowdsourced_fields.CrowdsourcedItem',
-    )
-
-    item_type = models.CharField(
-        max_length=256,
-        verbose_name=_('Item group'),
-    )
-
-
-
 class CrowdsourcedItem(models.Model):
     """
     Something that is both, masterdata and user entered data.
@@ -155,4 +119,42 @@ class CrowdsourcedItem(models.Model):
     is_user_generated = models.BooleanField(
         default=True,
         verbose_name=_('Is user generated'),
+    )
+
+    def __unicode__(self):
+        return '{0}: {1}'.format(self.item_type, self.value)
+
+
+class CrowdsourcedItemGenericForeignKey(models.Model):
+    """
+    Maps ``CrowdsourcedItem`` objects to the objects that use them.
+
+    This is a workaround because we don't want to dynamically add foreign
+    keys to the objects that have crowdsourced fields. We use this mapping
+    relationship instead to remember which object/field belongs to which
+    ``CrowdsourcedItem``.
+
+    :content_type: Part of the generic foreign key to the object this object
+      belongs to.
+    :object_id: See ``content_type``
+    :content_object: See ``content_type``
+    :item: The crowdsourced item which holds the approved data.
+    :item_type: We need this in order to know which ``CrowdsourcedItem`` to
+      get.
+
+    """
+    class Meta:
+        unique_together = ('object_id', 'item_type', )
+
+    content_type = models.ForeignKey(ContentType)
+    object_id = models.PositiveIntegerField()
+    content_object = generic.GenericForeignKey('content_type', 'object_id')
+
+    item = models.ForeignKey(
+        'crowdsourced_fields.CrowdsourcedItem',
+    )
+
+    item_type = models.CharField(
+        max_length=256,
+        verbose_name=_('Item group'),
     )
