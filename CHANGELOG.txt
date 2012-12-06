@@ -1,4 +1,6 @@
-=== 0.2 (ongoing) ===
+=== 0.3 (ongoing) ===
+
+=== 0.2 ===
 
 * Bugfixes
 
