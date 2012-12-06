@@ -1,5 +1,7 @@
 === 0.3 (ongoing) ===
 
+* Fixed MANIFEST.in - now static files are included
+
 === 0.2 ===
 
 * Bugfixes

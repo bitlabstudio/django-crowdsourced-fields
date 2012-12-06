@@ -3,7 +3,7 @@ include LICENSE
 include DESCRIPTION
 include CHANGELOG.txt
 include README.md
-graft crowdsourced_field
+graft crowdsourced_fields
 global-exclude *.orig *.pyc *.log
-prune crowdsourced_field/tests/coverage/
-prune crowdsourced_field/.ropeproject
+prune crowdsourced_fields/tests/coverage
+prune crowdsourced_fields/.ropeproject
