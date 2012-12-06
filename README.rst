@@ -1,19 +1,17 @@
 Django Crowdsourced Fields
 ==========================
 
-**WORK IN PROGRESS. DO NOT USE THIS!**
-
 A reusable Django app that allows to mark certain fields of your models as
 masterdata. Users would still be able to enter their own values but the app
 will map them to unique instances. Admin staff is able to review all user
-generated entriesand mark them as approved.
+generated entries and mark them as approved.
 
 An example could be a vehicle site, where you would like to allow users to
 enter make and model for their vehicle but you want to make sure that an
 entry of "bmw" and "Bmw" results in "BMW".
 
 The app also comes with a nice jQuery combobox for such fields, where user get
-autosuggestions while they type.
+auto-suggestions while they type.
 
 Installation
 ------------
@@ -43,7 +41,7 @@ Don't forget to migrate your database::
     ./manage.py migrate crowdsourced_fields
 
 Add jQuery and jQuery UI to your base template or at least to the template that 
-should display forms with crowdsourced fields. Also include the jquery UI
+should display forms with crowdsourced fields. Also include the jQuery UI
 styles and special styles provided by this app::
 
     <link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1/themes/flick/jquery-ui.css">
@@ -53,7 +51,7 @@ styles and special styles provided by this app::
     <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.21/jquery-ui.min.js"></script>
     {{ form.media.js }}
 
-You might want to include the jquery and jquery UI parts in your base template
+You might want to include the jQuery and jQuery UI parts in your base template
 and the ``{{ form.media }}`` parts only in the template that uses a form with
 crowdsourced fields.
 
@@ -113,6 +111,23 @@ Next you would create a ``ModelForm`` for your model with crowdsourced fields::
 The ``CrowdsourcedFieldsFormMixin`` will do the magic for you and add replace
 the original form field (a text input) with a combobox that has all existing
 values ready for autosuggest.
+
+Create your template
+++++++++++++++++++++
+
+As mentioned above, first make sure that jQuery, jQuery UI and the form's media
+is available in your template.
+
+After that you can initiate the comboboxes like so::
+
+    $(document).ready(function(){
+        $('#id_country').combobox({
+            source: {{ form.country_crowdsourced_values|safe }}
+        });
+    });
+
+In this case ``country`` would be the name of the form field.
+
 
 Contribute
 ----------
