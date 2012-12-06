@@ -115,9 +115,9 @@ class CrowdsourcedItem(models.Model):
     to approve all entries and make sure that the spelling and capitalization
     is correct.
 
-    :item_type: You might have a ``country`` field on several of your models and
-      you want the same autosuggestions for all models. Therefore you need to
-      define an ``item_type`` in your ``CROWDSOURCED_FIELDS`` attribute. By
+    :item_type: You might have a ``country`` field on several of your models
+      and you want the same autosuggestions for all models. Therefore you need
+      to define an ``item_type`` in your ``CROWDSOURCED_FIELDS`` attribute. By
       giving the same ``item_type`` to your models it means that the collected
       data is available to all these models.
 

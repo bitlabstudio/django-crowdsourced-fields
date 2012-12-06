@@ -11,7 +11,8 @@ from django.contrib import admin
 admin.autodiscover()
 
 
-urlpatterns = patterns('',
+urlpatterns = patterns(
+    '',
     url(r'^admin/', include(admin.site.urls)),
     url(r'^', include('crowdsourced_fields.tests.test_app.urls')),
 )

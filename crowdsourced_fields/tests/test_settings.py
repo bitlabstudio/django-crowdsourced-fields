@@ -7,29 +7,29 @@ SITE_ID = 1
 
 CURRENT_DIR = os.path.dirname(__file__)
 
-DATABASES={
+DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
         "NAME": ":memory:",
     }
 }
 
-ROOT_URLCONF='crowdsourced_fields.tests.urls'
+ROOT_URLCONF = 'crowdsourced_fields.tests.urls'
 
-STATIC_URL='/static/'
+STATIC_URL = '/static/'
 
-STATIC_ROOT=os.path.join(CURRENT_DIR, '../../static/')
+STATIC_ROOT = os.path.join(CURRENT_DIR, '../../static/')
 
-STATICFILES_DIRS=(
+STATICFILES_DIRS = (
     os.path.join(CURRENT_DIR, 'test_static'),
     os.path.join(CURRENT_DIR, '../static'),
 )
 
-TEMPLATE_DIRS=(
-    os.path.join(CURRENT_DIR,'../templates'),
+TEMPLATE_DIRS = (
+    os.path.join(CURRENT_DIR, '../templates'),
 )
 
-COVERAGE_REPORT_HTML_OUTPUT_DIR=os.path.join(
+COVERAGE_REPORT_HTML_OUTPUT_DIR = os.path.join(
     CURRENT_DIR, 'coverage')
 
 COVERAGE_MODULE_EXCLUDES = [
