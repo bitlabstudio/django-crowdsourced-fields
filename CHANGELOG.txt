@@ -1,4 +1,6 @@
-=== 0.3 (ongoing) ===
+=== 0.4 (ongoing) ===
+
+=== 0.3  ===
 
 * Fixed MANIFEST.in - now static files are included
 
