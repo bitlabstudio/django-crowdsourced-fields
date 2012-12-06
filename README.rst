@@ -81,7 +81,7 @@ fields that should be crowdsourced. This must be ``CharFields``.
 
 The inner dictionary supports the following keys as settings:
 
-2. **item_type (mandatory)**: The name of the group under which the data of
+1. **item_type (mandatory)**: The name of the group under which the data of
    this field should be grouped. Let's assume you have two models and both have
    a field ``country`` which should have access to the same data. By giving
    the same ``item_type`` for the field on both models, they will use the same
