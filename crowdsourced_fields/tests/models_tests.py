@@ -40,6 +40,16 @@ class CrowdsourcedFieldsModelMixinTestCase(TestCase):
             'The dynamically added methods should return the correct'
             ' crowdsourced value'))
 
+        CrowdsourcedItem.objects.all().delete()
+        CrowdsourcedItemGenericForeignKey.objects.all().delete()
+        self.dummy.country_crowdsourced()
+        self.assertEqual(
+            CrowdsourcedItem.objects.all().count(), 1, msg=(
+                'If this app was added to an existing app with existing data'
+                ' we will have values that are not, yet related to any'
+                ' crowdsourced items. They should be created when trying'
+                ' to access them'))
+
     def test_object_save(self):
         create_fixtures(self)
         self.assertEqual(

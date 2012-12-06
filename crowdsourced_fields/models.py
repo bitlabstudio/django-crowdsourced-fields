@@ -25,10 +25,15 @@ def add_crowdsourced_method(cls, field_name, settings):
         this_name = this.__name__
         original_name = this_name.replace('_crowdsourced', '')
         field_settings = self.CROWDSOURCED_FIELDS[original_name]
+        item_type = field_settings['item_type']
         content_type = ContentType.objects.get_for_model(self)
-        fk = CrowdsourcedItemGenericForeignKey.objects.get(
-            content_type=content_type, object_id=self.pk,
-            item_type=field_settings['item_type'])
+        try:
+            fk = CrowdsourcedItemGenericForeignKey.objects.get(
+                content_type=content_type, object_id=self.pk,
+                item_type=item_type)
+        except CrowdsourcedItemGenericForeignKey.DoesNotExist:
+            value = getattr(self, original_name)
+            fk = self.get_crowdsourced_item(value, item_type)
         return fk.item.value
 
     inner_function.__doc__ = (
@@ -54,33 +59,51 @@ class CrowdsourcedFieldsModelMixin(object):
         for field_name, field_settings in self.CROWDSOURCED_FIELDS.items():
             add_crowdsourced_method(self, field_name, field_settings)
 
+    def get_crowdsourced_item(self, original_value, item_type):
+        """
+        Returns the generic FK for a given original value.
+
+        If no crowdsourced item and generic FK exists for the given original
+        value, they will be created.
+
+        :original_value: The value that the user has entered.
+        :item_type: A string representing the item type of the value.
+
+        """
+        content_type = ContentType.objects.get_for_model(self)
+        new_item = False
+        new_fk = False
+        try:
+            item = CrowdsourcedItem.objects.get(
+                value__iexact=original_value, item_type=item_type)
+        except CrowdsourcedItem.DoesNotExist:
+            new_item = True
+            item = CrowdsourcedItem.objects.create(
+                item_type=item_type, value=original_value)
+
+        kwargs = {
+            'content_type': content_type,
+            'object_id': self.pk,
+            'item_type': item_type,
+        }
+        try:
+            fk = CrowdsourcedItemGenericForeignKey.objects.get(**kwargs)
+        except CrowdsourcedItemGenericForeignKey.DoesNotExist:
+            new_fk = True
+            fk = CrowdsourcedItemGenericForeignKey(**kwargs)
+
+        fk.item = item
+        if new_item or new_fk:
+            fk.save()
+        return fk
+
     def save(self, *args, **kwargs):
         super(CrowdsourcedFieldsModelMixin, self).save(
             *args, **kwargs)
-        content_type = ContentType.objects.get_for_model(self)
         for field_name, field_settings in self.CROWDSOURCED_FIELDS.items():
             item_type = field_settings['item_type']
             value = getattr(self, field_name).strip()
-
-            try:
-                item = CrowdsourcedItem.objects.get(
-                    value__iexact=value, item_type=item_type)
-            except CrowdsourcedItem.DoesNotExist:
-                item = CrowdsourcedItem.objects.create(
-                    item_type=item_type, value=value)
-
-            kwargs = {
-                'content_type': content_type,
-                'object_id': self.pk,
-                'item_type': item_type,
-            }
-            try:
-                fk = CrowdsourcedItemGenericForeignKey.objects.get(**kwargs)
-            except CrowdsourcedItemGenericForeignKey.DoesNotExist:
-                fk = CrowdsourcedItemGenericForeignKey(**kwargs)
-
-            fk.item = item
-            fk.save()
+            self.get_crowdsourced_item(value, item_type)
 
 
 class CrowdsourcedItem(models.Model):
