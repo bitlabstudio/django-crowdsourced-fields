@@ -1,4 +1,6 @@
-=== 0.4 (ongoing) ===
+=== 0.5 (ongoing) ===
+
+=== 0.4 ===
 
 * IMPORTANT: Fixed bad bug. It was not possible to have two fields on the same
   model that use the same item type. I had to add a new field to the generic
