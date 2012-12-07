@@ -9,6 +9,7 @@ class DummyModel(CrowdsourcedFieldsModelMixin, models.Model):
     """Dummy model needed for testing purposes."""
     CROWDSOURCED_FIELDS = {
         'country': {'item_type': 'countries', },
+        'country2': {'item_type': 'countries', },
         'title': {'item_type': 'titles', },
     }
 
@@ -25,4 +26,9 @@ class DummyModel(CrowdsourcedFieldsModelMixin, models.Model):
     country = models.CharField(
         max_length=256,
         verbose_name=_('Country'),
+    )
+
+    country2 = models.CharField(
+        max_length=256,
+        verbose_name=_('Country2'),
     )

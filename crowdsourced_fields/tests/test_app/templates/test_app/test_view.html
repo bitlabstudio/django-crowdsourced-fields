@@ -26,6 +26,10 @@ $(document).ready(function() {
         source: {{ form.country_crowdsourced_values|safe }}
     });
 
+    $('#id_country2').combobox({
+        source: {{ form.country2_crowdsourced_values|safe }}
+    });
+
     $('#id_title').combobox({
         source: {{ form.title_crowdsourced_values|safe }}
     });

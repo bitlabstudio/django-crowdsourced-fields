@@ -20,8 +20,9 @@ class CrowdsourcedItemAdmin(admin.ModelAdmin):
 
 
 class CrowdsourcedItemGenericForeignKeyAdmin(admin.ModelAdmin):
-    list_display = ('item_type', 'item', 'content_type', 'object_id', )
-    list_filter = ('item_type', 'item__is_user_generated', )
+    list_display = ('item_type', 'item', 'content_type', 'object_id',
+                    'field_name')
+    list_filter = ('item_type', 'item__is_user_generated', 'field_name')
     search_fields = ['item__value', ]
     actions = [approve_items]
 

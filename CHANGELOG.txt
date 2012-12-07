@@ -1,5 +1,12 @@
 === 0.4 (ongoing) ===
 
+* IMPORTANT: Fixed bad bug. It was not possible to have two fields on the same
+  model that use the same item type. I had to add a new field to the generic
+  key model, which is a mandatory field. After updating to this version,
+  you need to delete all your items and generic FKs and create a datamigration
+  that iterates over all your objects and saves them, so that the items
+  get re-created. Unfortunately you will have to approve all items again.
+
 === 0.3  ===
 
 * Fixed MANIFEST.in - now static files are included

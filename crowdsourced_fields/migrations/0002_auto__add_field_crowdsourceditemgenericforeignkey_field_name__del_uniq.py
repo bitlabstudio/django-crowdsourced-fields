@@ -9,32 +9,21 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Adding model 'CrowdsourcedItemGenericForeignKey'
-        db.create_table('crowdsourced_fields_crowdsourceditemgenericforeignkey', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('content_type', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['contenttypes.ContentType'])),
-            ('object_id', self.gf('django.db.models.fields.PositiveIntegerField')()),
-            ('item', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['crowdsourced_fields.CrowdsourcedItem'])),
-            ('item_type', self.gf('django.db.models.fields.CharField')(max_length=256)),
-        ))
-        db.send_create_signal('crowdsourced_fields', ['CrowdsourcedItemGenericForeignKey'])
+        # Removing unique constraint on 'CrowdsourcedItemGenericForeignKey', fields ['item_type', 'object_id']
+        db.delete_unique('crowdsourced_fields_crowdsourceditemgenericforeignkey', ['item_type', 'object_id'])
 
-        # Adding model 'CrowdsourcedItem'
-        db.create_table('crowdsourced_fields_crowdsourceditem', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('item_type', self.gf('django.db.models.fields.CharField')(max_length=256)),
-            ('value', self.gf('django.db.models.fields.CharField')(max_length=4000)),
-            ('is_user_generated', self.gf('django.db.models.fields.BooleanField')(default=True)),
-        ))
-        db.send_create_signal('crowdsourced_fields', ['CrowdsourcedItem'])
+        # Adding field 'CrowdsourcedItemGenericForeignKey.field_name'
+        db.add_column('crowdsourced_fields_crowdsourceditemgenericforeignkey', 'field_name',
+                      self.gf('django.db.models.fields.CharField')(default='', max_length=256, blank=True),
+                      keep_default=False)
 
 
     def backwards(self, orm):
-        # Deleting model 'CrowdsourcedItemGenericForeignKey'
-        db.delete_table('crowdsourced_fields_crowdsourceditemgenericforeignkey')
+        # Deleting field 'CrowdsourcedItemGenericForeignKey.field_name'
+        db.delete_column('crowdsourced_fields_crowdsourceditemgenericforeignkey', 'field_name')
 
-        # Deleting model 'CrowdsourcedItem'
-        db.delete_table('crowdsourced_fields_crowdsourceditem')
+        # Adding unique constraint on 'CrowdsourcedItemGenericForeignKey', fields ['item_type', 'object_id']
+        db.create_unique('crowdsourced_fields_crowdsourceditemgenericforeignkey', ['item_type', 'object_id'])
 
 
     models = {
@@ -53,8 +42,9 @@ class Migration(SchemaMigration):
             'value': ('django.db.models.fields.CharField', [], {'max_length': '4000'})
         },
         'crowdsourced_fields.crowdsourceditemgenericforeignkey': {
-            'Meta': {'unique_together': "(('object_id', 'item_type'),)", 'object_name': 'CrowdsourcedItemGenericForeignKey'},
+            'Meta': {'object_name': 'CrowdsourcedItemGenericForeignKey'},
             'content_type': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['contenttypes.ContentType']"}),
+            'field_name': ('django.db.models.fields.CharField', [], {'max_length': '256', 'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'item': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['crowdsourced_fields.CrowdsourcedItem']"}),
             'item_type': ('django.db.models.fields.CharField', [], {'max_length': '256'}),

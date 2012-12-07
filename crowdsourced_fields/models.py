@@ -30,10 +30,10 @@ def add_crowdsourced_method(cls, field_name, settings):
         try:
             fk = CrowdsourcedItemGenericForeignKey.objects.get(
                 content_type=content_type, object_id=self.pk,
-                item_type=item_type)
+                field_name=original_name, item_type=item_type)
         except CrowdsourcedItemGenericForeignKey.DoesNotExist:
             value = getattr(self, original_name)
-            fk = self.get_crowdsourced_item(value, item_type)
+            fk = self.get_crowdsourced_item(value, field_name, item_type)
         return fk.item.value
 
     inner_function.__doc__ = (
@@ -59,7 +59,7 @@ class CrowdsourcedFieldsModelMixin(object):
         for field_name, field_settings in self.CROWDSOURCED_FIELDS.items():
             add_crowdsourced_method(self, field_name, field_settings)
 
-    def get_crowdsourced_item(self, original_value, item_type):
+    def get_crowdsourced_item(self, original_value, field_name, item_type):
         """
         Returns the generic FK for a given original value.
 
@@ -71,29 +71,26 @@ class CrowdsourcedFieldsModelMixin(object):
 
         """
         content_type = ContentType.objects.get_for_model(self)
-        new_item = False
-        new_fk = False
         try:
             item = CrowdsourcedItem.objects.get(
                 value__iexact=original_value, item_type=item_type)
         except CrowdsourcedItem.DoesNotExist:
-            new_item = True
             item = CrowdsourcedItem.objects.create(
                 item_type=item_type, value=original_value)
 
         kwargs = {
             'content_type': content_type,
             'object_id': self.pk,
+            'field_name': field_name,
             'item_type': item_type,
         }
         try:
             fk = CrowdsourcedItemGenericForeignKey.objects.get(**kwargs)
         except CrowdsourcedItemGenericForeignKey.DoesNotExist:
-            new_fk = True
             fk = CrowdsourcedItemGenericForeignKey(**kwargs)
 
-        fk.item = item
-        if new_item or new_fk:
+        if fk.item_id != item.pk:
+            fk.item = item
             fk.save()
         return fk
 
@@ -103,7 +100,7 @@ class CrowdsourcedFieldsModelMixin(object):
         for field_name, field_settings in self.CROWDSOURCED_FIELDS.items():
             item_type = field_settings['item_type']
             value = getattr(self, field_name).strip()
-            self.get_crowdsourced_item(value, item_type)
+            self.get_crowdsourced_item(value, field_name, item_type)
 
 
 class CrowdsourcedItem(models.Model):
@@ -161,17 +158,30 @@ class CrowdsourcedItemGenericForeignKey(models.Model):
       belongs to.
     :object_id: See ``content_type``
     :content_object: See ``content_type``
+    :field_name: A string representing the field name on the content object.
+      This is needed if two fields use the same item type (i.e. ``Country of
+      Birth`` and ``Nationality`` would both use the item type ``Countries``)
     :item: The crowdsourced item which holds the approved data.
     :item_type: We need this in order to know which ``CrowdsourcedItem`` to
       get.
 
     """
-    class Meta:
-        unique_together = ('object_id', 'item_type', )
+    # TODO: we have to wait for the unique constraint until next release,
+    # see comment below
 
     content_type = models.ForeignKey(ContentType)
     object_id = models.PositiveIntegerField()
     content_object = generic.GenericForeignKey('content_type', 'object_id')
+
+    # TODO: This should be required. It has blank=True so that we can get a
+    # migration but in a later version we must require that users make sure
+    # this field is always set before running the migration that finally sets
+    # this to `blank=False`
+    field_name = models.CharField(
+        blank=True,
+        max_length=256,
+        verbose_name=_('Field name'),
+    )
 
     item = models.ForeignKey(
         'crowdsourced_fields.CrowdsourcedItem',
